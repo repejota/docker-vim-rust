@@ -34,6 +34,7 @@ RUN mkdir -p ~/.vim/bundle                                              && \
     git clone https://github.com/chriskempson/base16-vim.git            && \
     git clone https://github.com/rust-lang/rust.vim.git                 && \
     git clone https://github.com/cespare/vim-toml.git                   && \
+    git clone https://github.com/scrooloose/nerdtree.git                && \
     vim +PluginInstall +qall
 
 ADD bashrc /root/.bashrc
