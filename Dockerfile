@@ -38,6 +38,8 @@ RUN mkdir -p ~/.vim/bundle                                              && \
     git clone https://github.com/ctrlpvim/ctrlp.vim.git                 && \
     vim +PluginInstall +qall
 
+RUN git config --global core.editor vim
+
 ADD bashrc /root/.bashrc
 ADD vimrc /root/.vimrc
 ADD tmux.conf /root/.tmux.conf
