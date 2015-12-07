@@ -39,4 +39,4 @@ ADD bashrc /root/.bashrc
 ADD vimrc /root/.vimrc
 ADD tmux.conf /root/.tmux.conf
 
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["bash", "-l"]
