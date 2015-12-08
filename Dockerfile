@@ -33,10 +33,16 @@ RUN mkdir -p ~/.vim/bundle                                              && \
     git clone https://github.com/gmarik/Vundle.vim.git                  && \
     git clone https://github.com/chriskempson/base16-vim.git            && \
     git clone https://github.com/rust-lang/rust.vim.git                 && \
+    git clone https://github.com/cespare/vim-toml.git                   && \
+    git clone https://github.com/scrooloose/nerdtree.git                && \
+    git clone https://github.com/majutsushi/tagbar.git                  && \
+    git clone https://github.com/ctrlpvim/ctrlp.vim.git                 && \
     vim +PluginInstall +qall
+
+RUN git config --global core.editor vim
 
 ADD bashrc /root/.bashrc
 ADD vimrc /root/.vimrc
 ADD tmux.conf /root/.tmux.conf
 
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["bash", "-l"]
