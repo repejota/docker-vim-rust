@@ -26,7 +26,12 @@ RUN curl -sO https://static.rust-lang.org/dist/rust-$RUST_VERSION-x86_64-unknown
     ./rust-$RUST_VERSION-x86_64-unknown-linux-gnu/install.sh --without=rust-docs                    && \
     rm rust-$RUST_VERSION-x86_64-unknown-linux-gnu.tar.gz
 
+# Setup the environment
 WORKDIR /root
+ADD bashrc /root/.bashrc
+ADD vimrc /root/.vimrc
+ADD tmux.conf /root/.tmux.conf
+
 RUN git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell       && \
     git clone https://github.com/magicmonty/bash-git-prompt.git ~/.config/bash-git-prompt   && \
     mkdir -p ~/.vim/bundle                                                                  && \
@@ -34,6 +39,7 @@ RUN git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-
     # Get vim plugins
     git clone https://github.com/gmarik/Vundle.vim.git                                      && \
     git clone https://github.com/chriskempson/base16-vim.git                                && \
+    git clone https://github.com/bling/vim-airline.git                                      && \
     git clone https://github.com/rust-lang/rust.vim.git                                     && \
     git clone https://github.com/cespare/vim-toml.git                                       && \
     git clone https://github.com/scrooloose/nerdtree.git                                    && \
@@ -43,13 +49,8 @@ RUN git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-
     vim +PluginInstall +qall                                                                && \
     git config --global core.editor vim
 
-# Setup the environment
-ADD bashrc /root/.bashrc
-ADD vimrc /root/.vimrc
-ADD tmux.conf /root/.tmux.conf
-
 # Add volume to the source code
-VOLUME ["/source"]
+VOLUME ["/docker"]
 WORKDIR /source
 
 CMD ["bash", "-l"]
