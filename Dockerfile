@@ -1,13 +1,13 @@
+# Starting from debian latest as Docker recommends
+# https://docs.docker.com/engine/articles/dockerfile_best-practices/#from
 FROM debian:latest
-MAINTAINER Raül Pérez <repejota@gmail.com>
 
-ENV RUST_VERSION=1.4.0
+MAINTAINER Raül Pérez <repejota@gmail.com>
 
 ENV USER root
 ENV HOME /root
 
-WORKDIR /tmp
-
+# Update the system & install dependencies
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends build-essential \
     ca-certificates \
@@ -15,34 +15,41 @@ RUN apt-get install -y --no-install-recommends build-essential \
     git \
     libssl-dev \
     tmux \
-    vim-nox
+    vim-nox \
+    make
 
-RUN curl -sO https://static.rust-lang.org/dist/rust-$RUST_VERSION-x86_64-unknown-linux-gnu.tar.gz
-RUN tar -xzf rust-$RUST_VERSION-x86_64-unknown-linux-gnu.tar.gz
-RUN ./rust-$RUST_VERSION-x86_64-unknown-linux-gnu/install.sh --without=rust-docs
-
-VOLUME ["/source"]
+# Installing Rust
+ENV RUST_VERSION=1.4.0
+WORKDIR /tmp
+RUN curl -sO https://static.rust-lang.org/dist/rust-$RUST_VERSION-x86_64-unknown-linux-gnu.tar.gz   && \
+    tar -xzf rust-$RUST_VERSION-x86_64-unknown-linux-gnu.tar.gz                                     && \
+    ./rust-$RUST_VERSION-x86_64-unknown-linux-gnu/install.sh --without=rust-docs                    && \
+    rm rust-$RUST_VERSION-x86_64-unknown-linux-gnu.tar.gz
 
 WORKDIR /root
+RUN git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell       && \
+    git clone https://github.com/magicmonty/bash-git-prompt.git ~/.config/bash-git-prompt   && \
+    mkdir -p ~/.vim/bundle                                                                  && \
+    cd  ~/.vim/bundle                                                                       && \
+    # Get vim plugins
+    git clone https://github.com/gmarik/Vundle.vim.git                                      && \
+    git clone https://github.com/chriskempson/base16-vim.git                                && \
+    git clone https://github.com/rust-lang/rust.vim.git                                     && \
+    git clone https://github.com/cespare/vim-toml.git                                       && \
+    git clone https://github.com/scrooloose/nerdtree.git                                    && \
+    git clone https://github.com/majutsushi/tagbar.git                                      && \
+    git clone https://github.com/ctrlpvim/ctrlp.vim.git                                     && \
+    # Install vim plugins
+    vim +PluginInstall +qall                                                                && \
+    git config --global core.editor vim
 
-RUN git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
-RUN git clone https://github.com/magicmonty/bash-git-prompt.git ~/.config/bash-git-prompt
-
-RUN mkdir -p ~/.vim/bundle                                              && \
-    cd  ~/.vim/bundle                                                   && \
-    git clone https://github.com/gmarik/Vundle.vim.git                  && \
-    git clone https://github.com/chriskempson/base16-vim.git            && \
-    git clone https://github.com/rust-lang/rust.vim.git                 && \
-    git clone https://github.com/cespare/vim-toml.git                   && \
-    git clone https://github.com/scrooloose/nerdtree.git                && \
-    git clone https://github.com/majutsushi/tagbar.git                  && \
-    git clone https://github.com/ctrlpvim/ctrlp.vim.git                 && \
-    vim +PluginInstall +qall
-
-RUN git config --global core.editor vim
-
+# Setup the environment
 ADD bashrc /root/.bashrc
 ADD vimrc /root/.vimrc
 ADD tmux.conf /root/.tmux.conf
 
-ENTRYPOINT ["bash", "-l"]
+# Add volume to the source code
+VOLUME ["/source"]
+WORKDIR /source
+
+CMD ["bash", "-l"]
