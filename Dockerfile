@@ -19,7 +19,7 @@ RUN apt-get install -y --no-install-recommends build-essential \
     make
 
 # Installing Rust
-ENV RUST_VERSION=1.4.0
+ENV RUST_VERSION=1.5.0
 WORKDIR /tmp
 RUN curl -sO https://static.rust-lang.org/dist/rust-$RUST_VERSION-x86_64-unknown-linux-gnu.tar.gz   && \
     tar -xzf rust-$RUST_VERSION-x86_64-unknown-linux-gnu.tar.gz                                     && \
